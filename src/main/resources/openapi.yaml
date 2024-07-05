@@ -1,0 +1,538 @@
+
+openapi: 3.0.3
+info:
+  title: SUPhoto
+  description: |-
+    Сервис для обмена фотографиями с мероприятий.
+ 
+
+  contact:
+    email: nirku0soft@yandex.ru
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1
+  
+servers:
+  - url: http://localhost:8181
+
+
+
+paths:
+  /events:
+    get:
+      description: Получить список всех мероприятий
+      operationId: getAllEvents
+      tags:
+        - CRUD
+      parameters: 
+        - $ref: '#/components/parameters/pageNum'
+        - $ref: '#/components/parameters/pageSize'
+      responses: 
+        200: 
+           description: Ответ со списком мероприятий
+           content: 
+             application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/eventDTO'
+                          
+    post:
+      description: Метод для создания нового мероприятия
+      operationId: createEvent
+      tags:
+        - CRUD
+      requestBody:
+        description: Новое событие(id игнорируется)
+        required: true
+        content: 
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/eventDTO' 
+      responses: 
+        201:
+          description: Событие успешно сохранено. Возвращает сохраненную сущность с присвоенным ID
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/eventDTO'
+        400: 
+          $ref: '#/components/responses/validationErrorResponse'
+              
+  /events/{eventID}:
+    put:
+      description: Обновление сущности
+      operationId: updateEvent
+      tags:
+        - CRUD
+
+      parameters: 
+        - name: eventID
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+      
+      requestBody:
+        description: Обновленное событие
+        required: true
+        content: 
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/eventDTO'
+
+      responses: 
+        200:
+          description: Событие успешно сохранено
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/eventDTO'
+        404:
+          $ref: '#/components/responses/entityNotFoundResponse'
+
+        400: 
+          $ref: '#/components/responses/validationErrorResponse'
+
+    get:
+      description: Найти сущность по ID
+      operationId: findEventById
+      tags:
+        - CRUD
+
+      parameters: 
+        - name: eventID
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+      
+      responses:
+        200:
+          description: Сущность с заданным ID найдена
+          content: 
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/eventDTO'
+        404:
+          $ref: '#/components/responses/entityNotFoundResponse'
+
+    delete:
+      description: Удалить сущность по ID
+      operationId: deleteEventById
+      tags:
+        - CRUD
+
+      parameters: 
+        - name: eventID
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+      
+      responses:
+        204:
+          description: Сущность с заданным ID удалена
+          
+        404:
+          $ref: '#/components/responses/entityNotFoundResponse'
+
+  /users:
+    get:
+      description: Получить список всех пользователей
+      operationId: getAllUsers
+      tags:
+        - CRUD
+      parameters: 
+        - $ref: '#/components/parameters/pageNum'
+        - $ref: '#/components/parameters/pageSize'
+      responses: 
+        200: 
+           description: Ответ со списком пользователей
+           content: 
+             application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/userDTO'
+                          
+    post:
+      description: Метод для создания нового пользователя
+      operationId: createUser
+      tags:
+        - CRUD
+      requestBody:
+        description: Новый пользователь(id игнорируется)
+        required: true
+        content: 
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/userDTO' 
+      responses: 
+        201:
+          description: Сущность успешно сохранена. Возвращает сохраненную сущность с присвоенным ID
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/userDTO'
+        400: 
+          $ref: '#/components/responses/validationErrorResponse'
+
+  /users/{userID}:
+    put:
+      description: Обновление сущности
+      operationId: updateUser
+      tags:
+        - CRUD
+      parameters: 
+        - name: userID
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+      
+      requestBody:
+        description: Обновленная сущность
+        required: true
+        content: 
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/userDTO'
+
+      responses: 
+        202:
+          description: пользователь успешно сохранен
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/userDTO'
+        404:
+          $ref: '#/components/responses/entityNotFoundResponse'
+
+        400: 
+          $ref: '#/components/responses/validationErrorResponse'
+
+    get:
+      description: Найти сущность по ID
+      operationId: findUserById
+      tags:
+        - CRUD
+
+      parameters: 
+        - name: userID
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+      
+      responses:
+        200:
+          description: Сущность с заданным ID найдена
+          content: 
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/userDTO'
+        404:
+          $ref: '#/components/responses/entityNotFoundResponse'
+
+    delete:
+      description: Удалить сущность по ID
+      operationId: deleteUserById
+      tags:
+        - CRUD
+
+      parameters: 
+        - name: userID
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+      
+      responses:
+        204:
+          description: Сущность с заданным ID удалена
+          
+        404:
+          $ref: '#/components/responses/entityNotFoundResponse'
+
+  /users/{userID}/events:
+    get:
+      description: Получить список мероприятий пользователя
+      operationId: getAllEventsOfUser
+      tags:
+        - Logic
+      
+      parameters:
+        - name: userID
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+
+
+      responses:
+        200:
+          description: Список ID мероприятий с учетом ограничений
+          content: 
+            application/json: 
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/ID'
+        404:
+          $ref: '#/components/responses/entityNotFoundResponse'
+
+
+    post:
+      description: Записать пользовательа на мероприятие
+      operationId: inviteUserToEvent
+      tags:
+        - Logic
+      parameters:
+        - name: userID
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: ID мероприятия
+        required: true
+        content: 
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/ID'
+
+      responses:
+        202:
+          description: пользователь записан на мероприятие
+        406:
+          description: пользователь уже записан на мероприятие
+        404:
+          $ref: '#/components/responses/entityNotFoundResponse'
+
+    delete:
+      description: Отменить запись пользователя на мероприятие
+      operationId: kickUserFromEvent
+      tags:
+        - Logic
+      parameters:
+        - name: userID
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: ID мероприятия
+        required: true
+        content: 
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/ID'
+
+      responses:
+        204:
+          description: Запись на мероприятие отменена
+        406:
+          description: пользователь не записан на мероприятие
+        404:
+          $ref: '#/components/responses/entityNotFoundResponse'
+
+  /events/{eventID}/users:   
+    get:
+      description: Получить список пользовательов мероприятия
+      operationId: getAllUsersOfEvent
+      tags:
+        - Logic
+      
+      parameters:
+        - name: eventID
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+
+      responses:
+        200:
+          description: Список ID пользователей с учетом ограничений
+          content: 
+            application/json: 
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/ID'
+        404:
+          $ref: '#/components/responses/entityNotFoundResponse'
+
+
+    post:
+      description: Записать пользователя на мероприятие
+      operationId: addUserToEvent
+      tags:
+        - Logic
+      parameters:
+        - name: eventID
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        description: ID пользователя
+        content: 
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/ID'
+
+      responses:
+        202:
+          description: Пользователь записан на мероприятие
+        406:
+          description: Пользователь уже записан на мероприятие
+        404:
+          $ref: '#/components/responses/entityNotFoundResponse'
+
+    delete:
+      description: Отменить запись пользователя на мероприятие
+      operationId: removeUserFromEvent
+      tags:
+        - Logic
+      parameters:
+        - name: eventID
+          required: true
+          in: path
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        description: ID пользователя
+        content: 
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/ID'
+
+      responses:
+        204:
+          description: Запись на мероприятие отменена
+        406:
+          description: пользователь не записан на мероприятие
+        404:
+          $ref: '#/components/responses/entityNotFoundResponse'
+
+
+components:
+  schemas:   
+    eventDTO:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 123
+          title:
+              type: string
+              example: Прогулка по реке Сок
+          location:
+              type: string
+              example: село Старосемейкино
+          startTime:
+              type: string
+              format: date-time
+              example: 2005-08-09T18:31:42+03
+          endTime:
+              format: date-time
+              type: string
+              example: 2005-08-09T18:31:42+03
+    ID:
+      type: object
+      description: Идентификатор
+      properties: 
+        id:
+          type: integer
+          format: int64
+          example: 123
+
+    userDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 123
+        username:
+          type: string
+          example: fizlrock
+        firstname:
+          type: string
+          example: Никита
+        lastname:
+          type: string
+          example: Кукурузин
+        patronymic:
+          type: string
+          example: Бетонович
+        
+    
+    wrongField:
+      type: object
+      properties:
+        fieldName:
+          type: string
+          example: user.username
+        errorDescripion:
+          type: string
+          example: To long
+
+  parameters:
+    pageNum:
+      name: pageNum
+      in: query
+      description: Номер страницы
+      required: true
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+    pageSize:
+      name: pageSize
+      in: query
+      description: Максимальное число элементов на странице.
+      required: true
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+
+
+  responses: 
+    validationErrorResponse:
+      description: Переданы недопустимые параметры
+      content:
+        application/json:
+          schema: 
+            type: array
+            items:
+              $ref: '#/components/schemas/wrongField'
+
+    entityNotFoundResponse:
+      description: Сущность с таким ID не найдена
+
+            
+                 
+        
+    
+
+
+

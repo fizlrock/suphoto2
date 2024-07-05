@@ -1,0 +1,369 @@
+databaseChangeLog:
+- changeSet:
+    id:  '1'
+    author:  dev.fizlrock
+    labels: init-database
+    comment: Создание таблицы под события
+    changes:
+    - createTable:
+        tableName:  event
+        remarks: Таблица для событий
+        columns:
+          - column:
+              name:  id
+              type:  int
+              autoIncrement:  true
+              constraints:
+                primaryKey:  true
+                nullable:  false
+          - column:
+              name:  title
+              type:  varchar(250)
+              constraints:
+                nullable:  false
+          - column:
+              name:  location
+              type:  varchar(250)
+              constraints:
+                nullable:  false
+          - column:
+              name:  start_time
+              type:  datetime
+              constraints:
+                nullable:  false
+          - column:
+              name:  end_time
+              type:  datetime
+              constraints:
+                nullable:  false
+- changeSet:
+    id: "2"
+    author: dev.fizlrock
+    labels: init-database
+    comment: Создание таблиц для пользователей и их прав
+    changes:
+        - createTable:
+                tableName: users
+                remarks: Таблица для пользователей
+                columns:
+                    - column:
+                            name:  id
+                            type:  int
+                            autoIncrement:  true
+                            constraints:
+                                primaryKey:  true
+                                nullable:  false
+                    - column:
+                            name: username
+                            type: varchar(30)
+                            constraints:
+                                nullable:  false
+                                uniquie: true
+                    - column:
+                            name: first_name
+                            type: varchar(30)
+                    - column:
+                            name: last_name
+                            type: varchar(30)
+                    - column:
+                            name: patronymic
+                            type: varchar(30)
+        - createTable:
+                tableName: roles
+                remarks: Таблиц для ролей пользователей(инструктор, администратор)
+
+                columns:
+                    - column:
+                        name:  id
+                        type:  int
+                        autoIncrement:  true
+                        constraints:
+                            primaryKey:  true
+                            nullable:  false
+                    - column:
+                        name: role_name
+                        type: varchar(30)
+                        constraints:
+                            nullable: false
+                            unique: true
+                    
+    
+- changeSet:
+    id: "3"
+    author: dev.fizlrock
+    labels: 
+         init-database
+    comment: Создание таблиц связи пользователей и ролей
+
+    changes:
+        - createTable:
+                tableName: user_roles
+                columns:
+                    - column:
+                        name:  user_id
+                        type:  int
+                        constraints:
+                            primaryKey:  true
+                            nullable:  false
+                    - column:
+                        name:  role_id
+                        type:  int
+                        constraints:
+                            primaryKey:  true
+                            nullable:  false
+        - addForeignKeyConstraint:
+                baseColumnNames:  user_id
+                baseTableName:  user_roles
+                constraintName:  user_roles_user_fk
+                deferrable:  true
+                initiallyDeferred:  true
+                onDelete:  CASCADE
+                onUpdate:  RESTRICT
+                referencedColumnNames:  id
+                referencedTableName:  users
+                validate:  true
+        - addForeignKeyConstraint:
+                baseColumnNames:  role_id
+                baseTableName:  user_roles
+                constraintName:  user_roles_role_fk
+                deferrable:  true
+                initiallyDeferred:  true
+                onDelete:  CASCADE
+                onUpdate:  RESTRICT
+                referencedColumnNames:  id
+                referencedTableName:  roles
+                validate:  true
+
+
+- changeSet:
+     id: "4"
+     author: fizlrock
+     labels: init-database
+     comment: Удаление лишних таблиц
+     changes:
+        - dropTable:
+              tableName: user_roles
+        - dropTable:
+              tableName: roles
+        - addColumn:
+              tableName: users
+              columns: 
+                  - column:
+                      name: role
+                      type: varchar(50)
+                      defaultValue: None
+     rollback: 
+        - createTable:
+                tableName: roles
+                remarks: Таблиц для ролей пользователей(инструктор, администратор)
+
+                columns:
+                    - column:
+                        name:  id
+                        type:  int
+                        autoIncrement:  true
+                        constraints:
+                            primaryKey:  true
+                            nullable:  false
+                    - column:
+                        name: role_name
+                        type: varchar(30)
+                        constraints:
+                            nullable: false
+                            unique: true
+        - createTable:
+                tableName: user_roles
+                columns:
+                    - column:
+                        name:  user_id
+                        type:  int
+                        constraints:
+                            primaryKey:  true
+                            nullable:  false
+                    - column:
+                        name:  role_id
+                        type:  int
+                        constraints:
+                            primaryKey:  true
+                            nullable:  false
+                  
+        - addForeignKeyConstraint:
+                baseColumnNames:  user_id
+                baseTableName:  user_roles
+                constraintName:  user_roles_user_fk
+                deferrable:  true
+                initiallyDeferred:  true
+                onDelete:  CASCADE
+                onUpdate:  RESTRICT
+                referencedColumnNames:  id
+                referencedTableName:  users
+                validate:  true
+        - addForeignKeyConstraint:
+                baseColumnNames:  role_id
+                baseTableName:  user_roles
+                constraintName:  user_roles_role_fk
+                deferrable:  true
+                initiallyDeferred:  true
+                onDelete:  CASCADE
+                onUpdate:  RESTRICT
+                referencedColumnNames:  id
+                referencedTableName:  roles
+                validate:  true
+
+
+- changeSet:
+      id: "5"
+      author: fizlrock 
+      labels: init-database, renaming
+      comment: Переименование таблицы с событиями, а то как-то не по феншую
+      changes:
+        - renameTable:
+              oldTableName: event 
+              newTableName: events
+
+- changeSet:
+      id: "6"
+      author: fizlrock 
+      labels: init-database
+      comment: Создание таблицы для связи Users-Events
+      changes:
+          - createTable:
+              tableName: events_users
+              columns:
+                  - column:
+                      name: event_id
+                      type: int
+                  - column:
+                      name: user_id
+                      type: int
+
+          - addForeignKeyConstraint:
+              baseTableName: events_users
+              baseColumnNames: event_id
+              constraintName: events_users_event_id_fk
+              referencedTableName: events
+              referencedColumnNames: id
+              onDelete: restrict
+              onUpdate: restrict
+          - addForeignKeyConstraint:
+              baseTableName: events_users
+              baseColumnNames: user_id
+              constraintName: events_users_user_id_fk
+              referencedTableName: users
+              referencedColumnNames: id
+              onDelete: restrict
+              onUpdate: restrict
+
+- changeSet:
+      id: "7"
+      author: fizlrock 
+      comment: Переименование колонки, т.к. Hibernate настроить сложнее
+      changes:
+        - renameColumn:
+              tableName: events_users
+              oldColumnName: user_id
+              newColumnName: staff_id
+
+- changeSet:
+      id: "8"
+      author: fizlrock 
+      comment: Добавление ограничение на events_users
+      changes:
+        - addPrimaryKey:
+              tableName: events_users
+              columnNames: event_id, staff_id
+              constraintName: events_usert_pk
+
+- changeSet:
+      id: "9"
+      ignore: true
+      author: fizlrock 
+      comment: Переименование таблицы, с hibernate лень разбираться
+      changes:
+          - renameTable:
+              oldTableName: events_users
+              newTableName: events_staff
+- changeSet:
+      id: "10"
+      author: fizlrock 
+      comment: Изменение типа айдишников с int на long
+      rollback: 
+          - modifyDataType:
+              tableName: users
+              columnName: id
+              newDataType: int
+          - modifyDataType:
+              tableName: events
+              columnName: id
+              newDataType: int
+          - modifyDataType:
+              tableName: events_users
+              columnName: event_id
+              newDataType: int
+          - modifyDataType:
+              tableName: events_users
+              columnName: staff_id
+              newDataType: int
+
+      changes:
+          - modifyDataType:
+              tableName: users
+              columnName: id
+              newDataType: bigint
+          - modifyDataType:
+              tableName: events
+              columnName: id
+              newDataType: bigint
+          - modifyDataType:
+              tableName: events_users
+              columnName: event_id
+              newDataType: bigint
+          - modifyDataType:
+              tableName: events_users
+              columnName: staff_id
+              newDataType: bigint
+- changeSet:
+      id: "11"
+      author: fizlrock 
+      comment: Уникальность username
+
+      changes:
+        - addUniqueConstraint:
+              tableName: users
+              columnNames: username
+              constraintName: users_unique_username
+              validate: true
+- changeSet:
+      id: "12"
+      author: fizlrock 
+      comment: hibernate умеет удивлять
+
+      changes:
+          - renameTable:
+              oldTableName: events_users
+              newTableName: users_events
+
+- changeSet:
+      id: "13"
+      author: fizlrock 
+      comment: hibernate умеет удивлять
+
+      changes:
+          - renameColumn:
+              tableName: users_events
+              oldColumnName: event_id
+              newColumnName: events_id
+- changeSet:
+      id: "14"
+      author: fizlrock 
+      comment: create column for password in users table
+
+      changes:
+          - addColumn:
+              tableName: users
+              columns:
+                  - column:
+                      name: password
+                      type: clob
+                      constraints:
+                        nullable: false
