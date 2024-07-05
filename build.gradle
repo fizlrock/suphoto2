@@ -45,3 +45,26 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+
+
+// Настройки для openApi плагина
+
+compileJava.dependsOn tasks.openApiGenerate
+
+openApiGenerate {
+	inputSpec='src/main/resources/static/API/spec.yaml'
+	generatorName='spring'
+	additionalProperties = [
+		"useSpringBoot3":"true"	
+	]
+}
+
+sourceSets {
+    main {
+        java{
+            srcDirs 'build/generate-resources/main/src/main/java' /* include proto files from base project level */
+        }
+    }
+}
+
