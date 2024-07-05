@@ -6,8 +6,6 @@ package dev.fizlrock.suphoto;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import org.openapitools.api.UsersApi;
-
 @SpringBootApplication
 public class SuphotoApplication {
 
@@ -16,8 +14,5 @@ public class SuphotoApplication {
 	}
 
 
-	class someApi implements UsersApi{
-		
-	}
 
 }
