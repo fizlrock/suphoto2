@@ -27,7 +27,7 @@ public class UserCrudService {
   public UserDTO saveUser(UserDTO rawUser) {
 
     User user = mapper.map(rawUser, User.class);
-    user.setPassword("123123");
+    user.setPassword("default password");
     User savedUser = userRepo.save(user);
     UserDTO savedUserDTO = mapper.map(savedUser, UserDTO.class);
     return savedUserDTO;

@@ -52,6 +52,10 @@ dependencies {
   liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:2.1.1'
   liquibaseRuntime 'info.picocli:picocli:4.7.5'
   liquibaseRuntime 'org.yaml:snakeyaml:1.33'
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.3.1'
+
+	
 }
 
 tasks.named('test') {
@@ -85,7 +89,7 @@ liquibase {
   activities {
 		main {
 			changelogFile 'src/main/resources/db/changelog/db.changelog-master.yaml'
-			url 'jdbc:postgresql://147.45.114.179:5432/photodb'
+			url 'jdbc:postgresql://localhost:5432/photodb'
 			username 'admin'
 			password 'gracesecret'
 			logLevel 'info'

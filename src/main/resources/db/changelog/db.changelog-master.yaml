@@ -367,3 +367,36 @@ databaseChangeLog:
                       type: clob
                       constraints:
                         nullable: false
+ 
+- changeSet:
+        id: "15"
+        author: fizlrock
+        comment: create photo table
+
+        changes:
+            - createTable:
+                  tableName: photo
+                  columns:
+                      - column:
+                          name: id
+                          type: int
+                          autoIncrement: true
+                          constraints:
+                            nullable: false
+                            primaryKey: true
+                      - column:
+                          name: event_id
+                          type: int
+                          constraints:
+                            nullable: false
+                      - column:
+                          name: url
+                          type: varchar(250)
+                          constraints:
+                            nullable: false
+            - addForeignKeyConstraint:
+                  constraintName: photo_event_fk
+                  baseTableName: photo
+                  baseColumnNames: event_id
+                  referencedTableName: events
+                  referencedColumnNames: id
