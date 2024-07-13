@@ -38,7 +38,7 @@ public class FirstUserApplicatonListener implements ApplicationListener<ContextR
           .password(encoder.encode(password))
           .lastName("Михайлов")
           .firstName("Андрей")
-          .partonymic("Игоревич")
+          .patronymic("Игоревич")
           .role(Role.God)
           .build();
       userRepo.save(god);

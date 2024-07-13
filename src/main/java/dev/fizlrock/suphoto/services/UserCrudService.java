@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.openapitools.model.NewUserDTO;
 import org.openapitools.model.UserDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,10 @@ import org.springframework.stereotype.Service;
 import dev.fizlrock.suphoto.domain.entity.User;
 import dev.fizlrock.suphoto.domain.exception.UserNotFoundException;
 import dev.fizlrock.suphoto.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class UserCrudService {
 
   public UserCrudService(UserRepository userRepo, ModelMapper mapper) {
@@ -33,9 +36,13 @@ public class UserCrudService {
     return savedUserDTO;
   }
 
-  public UserDTO createUser(UserDTO rawUser) {
-    rawUser.setId(null);
-    return saveUser(rawUser);
+  public UserDTO createUser(NewUserDTO rawUser) {
+
+    log.warn("Client new user request: {}", rawUser);
+
+    User newUser = mapper.map(rawUser, User.class);
+    log.warn("After mapping: {}", newUser);
+    return new UserDTO();
   }
 
   public UserDTO findUserById(Long id) throws UserNotFoundException {

@@ -28,6 +28,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class User extends BaseEntity {
 
   public static enum Role {
@@ -51,7 +52,7 @@ public class User extends BaseEntity {
 
   @Column(name = "patronymic", nullable = true)
   @Length(min = 5, max = 30)
-  protected String partonymic;
+  protected String patronymic;
 
   @Column(name = "role", nullable = false)
   @Builder.Default

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.openapitools.api.UsersApi;
 import org.openapitools.model.ID;
+import org.openapitools.model.NewUserDTO;
 import org.openapitools.model.UserDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,8 @@ public class UserController implements UsersApi {
     return ResponseEntity.ok(users);
   }
 
-  public ResponseEntity<UserDTO> createUser(UserDTO userDTO) {
+  @Override
+  public ResponseEntity<UserDTO> createUser(NewUserDTO userDTO) {
     UserDTO saved_user = userService.createUser(userDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(saved_user);
   }

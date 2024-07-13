@@ -171,7 +171,7 @@ paths:
         content: 
           application/json: 
             schema:
-              $ref: '#/components/schemas/userDTO' 
+              $ref: '#/components/schemas/newUserDTO' 
       responses: 
         201:
           description: Сущность успешно сохранена. Возвращает сохраненную сущность с присвоенным ID
@@ -483,6 +483,28 @@ components:
         patronymic:
           type: string
           example: Бетонович
+
+    newUserDTO:
+      type: object
+      properties:
+        username:
+          type: string
+          example: fizlrock
+        firstname:
+          type: string
+          example: Никита
+        lastname:
+          type: string
+          example: Кукурузин
+        patronymic:
+          type: string
+          example: Бетонович
+        password:
+          type: string
+          example: '123456789'
+        role:
+          type: string
+          example: 'Trainer'
         
     
     wrongField:
