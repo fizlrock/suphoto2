@@ -44,11 +44,11 @@ public class User extends BaseEntity {
 
   @Column(name = "firstName", nullable = false)
   @Length(min = 5, max = 30)
-  protected String firstName;
+  protected String firstname;
 
   @Column(name = "lastName", nullable = false)
   @Length(min = 5, max = 30)
-  protected String lastName;
+  protected String lastname;
 
   @Column(name = "patronymic", nullable = true)
   @Length(min = 5, max = 30)

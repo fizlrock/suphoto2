@@ -36,8 +36,8 @@ public class FirstUserApplicatonListener implements ApplicationListener<ContextR
       var god = User.builder()
           .username(username)
           .password(encoder.encode(password))
-          .lastName("Михайлов")
-          .firstName("Андрей")
+          .lastname("Михайлов")
+          .firstname("Андрей")
           .patronymic("Игоревич")
           .role(Role.God)
           .build();

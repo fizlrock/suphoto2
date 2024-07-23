@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.openapitools.model.EventDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import dev.fizlrock.suphoto.domain.entity.Event;
 import dev.fizlrock.suphoto.domain.exception.EventNotFoundException;
+import dev.fizlrock.suphoto.mappers.EventMapper;
 import dev.fizlrock.suphoto.repositories.EventRepository;
 
 /**
@@ -19,18 +19,18 @@ import dev.fizlrock.suphoto.repositories.EventRepository;
 @Service
 public class EventCrudService {
 
-  public EventCrudService(EventRepository eventRepo, ModelMapper mapper) {
+  public EventCrudService(EventRepository eventRepo, EventMapper mapper) {
     this.eventRepo = eventRepo;
-    this.mapper = mapper;
+    this.eventMapper = mapper;
   }
 
   EventRepository eventRepo;
-  ModelMapper mapper;
+  EventMapper eventMapper;
 
   public EventDTO saveEvent(EventDTO eventDTO) {
-    Event event = mapper.map(eventDTO, Event.class);
+    Event event = eventMapper.from(eventDTO);
     Event savedEvent = eventRepo.save(event);
-    EventDTO savedEventDTO = mapper.map(savedEvent, EventDTO.class);
+    EventDTO savedEventDTO = eventMapper.from(savedEvent);
     return savedEventDTO;
   }
 
@@ -42,7 +42,7 @@ public class EventCrudService {
   public EventDTO findEventById(Long id) {
     Optional<Event> event = eventRepo.findById(id);
     if (event.isPresent())
-      return mapper.map(event, EventDTO.class);
+      return eventMapper.from(event.get());
     else
       throw new EventNotFoundException(id);
   }
@@ -56,7 +56,7 @@ public class EventCrudService {
   public List<EventDTO> findAllEvents(PageRequest pageRequest) {
 
     List<EventDTO> users = eventRepo.findAll(pageRequest).stream()
-        .map(x -> mapper.map(x, EventDTO.class))
+        .map(eventMapper::from)
         .collect(Collectors.toList());
 
     return users;

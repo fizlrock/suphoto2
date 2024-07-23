@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
-import org.openapitools.model.NewUserDTO;
 import org.openapitools.model.UserDTO;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import dev.fizlrock.suphoto.domain.entity.User;
 import dev.fizlrock.suphoto.domain.exception.UserNotFoundException;
+import dev.fizlrock.suphoto.mappers.UserMapper;
 import dev.fizlrock.suphoto.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,37 +19,37 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserCrudService {
 
-  public UserCrudService(UserRepository userRepo, ModelMapper mapper) {
+  private PasswordEncoder passEncoder;
+  private UserRepository userRepo;
+  private UserMapper userMapper;
+
+  public UserCrudService(UserRepository userRepo, UserMapper mapper, PasswordEncoder passEncoder) {
     this.userRepo = userRepo;
-    this.mapper = mapper;
+    this.userMapper = mapper;
+    this.passEncoder = passEncoder;
   }
 
-  private UserRepository userRepo;
-  private ModelMapper mapper;
-
-  public UserDTO saveUser(UserDTO rawUser) {
-
-    User user = mapper.map(rawUser, User.class);
-    user.setPassword("default password");
+  public UserDTO saveNewUser(UserDTO rawUser) {
+    User user = userMapper.from(rawUser);
+    user.setId(null);
+    user.setPassword(passEncoder.encode(user.getPassword()));
     User savedUser = userRepo.save(user);
-    UserDTO savedUserDTO = mapper.map(savedUser, UserDTO.class);
+    UserDTO savedUserDTO = userMapper.from(savedUser);
     return savedUserDTO;
   }
 
-  public UserDTO createUser(NewUserDTO rawUser) {
-
-    log.warn("Client new user request: {}", rawUser);
-
-    User newUser = mapper.map(rawUser, User.class);
-    log.warn("After mapping: {}", newUser);
-    return new UserDTO();
+  public UserDTO updateExistingUser(Long userId, UserDTO userDTO) {
+    User user = userMapper.from(userDTO);
+    user.setId(userId);
+    userRepo.save(user);
+    return userMapper.from(user);
   }
 
   public UserDTO findUserById(Long id) throws UserNotFoundException {
     Optional<User> user = userRepo.findById(id);
 
     if (user.isPresent())
-      return mapper.map(user, UserDTO.class);
+      return userMapper.from(user.get());
     else
       throw new UserNotFoundException(id);
   }
@@ -63,7 +63,7 @@ public class UserCrudService {
   public List<UserDTO> findAllUsers(PageRequest pageRequest) {
 
     List<UserDTO> users = userRepo.findAll(pageRequest).stream()
-        .map(x -> mapper.map(x, UserDTO.class))
+        .map(userMapper::from)
         .collect(Collectors.toList());
 
     return users;

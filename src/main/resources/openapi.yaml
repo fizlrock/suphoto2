@@ -171,7 +171,7 @@ paths:
         content: 
           application/json: 
             schema:
-              $ref: '#/components/schemas/newUserDTO' 
+              $ref: '#/components/schemas/userDTO' 
       responses: 
         201:
           description: Сущность успешно сохранена. Возвращает сохраненную сущность с присвоенным ID
@@ -464,29 +464,14 @@ components:
           format: int64
           example: 123
 
+
     userDTO:
       type: object
       properties:
         id:
           type: integer
           format: int64
-          example: 123
-        username:
-          type: string
-          example: fizlrock
-        firstname:
-          type: string
-          example: Никита
-        lastname:
-          type: string
-          example: Кукурузин
-        patronymic:
-          type: string
-          example: Бетонович
-
-    newUserDTO:
-      type: object
-      properties:
+          example: 1
         username:
           type: string
           example: fizlrock
@@ -504,8 +489,11 @@ components:
           example: '123456789'
         role:
           type: string
-          example: 'Trainer'
-        
+          enum:
+            - None
+            - Client
+            - Trainer
+            - God
     
     wrongField:
       type: object
@@ -527,6 +515,7 @@ components:
         type: integer
         format: int32
         minimum: 0
+        default: 0
     pageSize:
       name: pageSize
       in: query
@@ -536,6 +525,7 @@ components:
         type: integer
         format: int32
         minimum: 1
+        default: 20
 
 
   responses: 
